@@ -36,7 +36,7 @@ function Posts(props) {
     e.preventDefault();
     const docRef = doc(db, "post", post_id);
 
-    const docSnap = await (await getDoc(docRef)).data();
+    const docSnap = await getDoc(docRef).data();
 
     if (docSnap.likes) {
       if (docSnap.likes.includes(user.uid)) {

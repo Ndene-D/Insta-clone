@@ -20,8 +20,6 @@ function Login() {
         const credential = GoogleAuthProvider.credentialFromResult(results);
         const token = credential.accessToken;
         const user = results.user;
-
-        console.log(user);
         dispatch({
           type: actionTypes.SET_USER,
           user: results.user,
@@ -31,7 +29,7 @@ function Login() {
         const errorCode = error.code;
         const errorMessage = error.message;
         const email = error.email;
-        console.log({ errorCode, errorMessage, email });
+        console.error({ errorCode, errorMessage, email });
       });
   };
   return (
