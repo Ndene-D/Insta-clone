@@ -45,3 +45,14 @@
   font-weight: normal;
   padding: 12px 28px;
 }
+
+.post__header--right .MuiSvgIcon-root {
+  background-color: lightgray;
+  border-radius: 100px;
+  padding: 4px;
+  color: white;
+}
+
+.post__header--right .MuiSvgIcon-root:hover {
+  background-color: red;
+}

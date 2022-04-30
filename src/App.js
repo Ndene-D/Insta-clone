@@ -73,7 +73,7 @@ function App() {
               <Button type="submit" onClick={handlePostButton}>
                 Post
               </Button>
-            </div>{" "}
+            </div>
           </>
         )}
         {posts.map((post) => (

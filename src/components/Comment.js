@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Avatar } from "@mui/material";
 import "../css/comment.css";
 import {
   collection,
@@ -9,6 +11,7 @@ import {
   onSnapshot,
   updateDoc,
   Timestamp,
+  arrayRemove,
   doc,
 } from "firebase/firestore";
 
@@ -26,6 +29,7 @@ function Comment(props) {
     await updateDoc(docRef, {
       comments: [
         {
+          avatarURL: user.photoURL,
           username: user.displayName,
           comment: input,
         },
@@ -35,6 +39,18 @@ function Comment(props) {
     setInput("");
   };
 
+  const handleCommentDelete = async (e, avatar, username, comment) => {
+    e.preventDefault();
+    const docRef = doc(db, "post", post_id);
+    await updateDoc(docRef, {
+      comments: arrayRemove({
+        avatarURL: avatar,
+        username: username,
+        comment: comment,
+      }),
+    });
+  };
+
   return (
     <div className="comment">
       <div className="comment__body">
@@ -42,10 +58,29 @@ function Comment(props) {
           ? null
           : comments.map((comment) => (
               <>
-                <div>
-                  <h4 className="comment__user">
-                    <strong>{comment.username}:</strong> {comment.comment}
-                  </h4>
+                <div className="comment__item">
+                  <div className="comment__item--left">
+                    <Avatar src={comment.avatarURL} />
+                    <h4 className="comment__user" key={post_id}>
+                      <strong>{comment.username}:</strong> {comment.comment}
+                    </h4>
+                  </div>
+                  {user && user.displayName === comment.username ? (
+                    <div className="comment__item--right">
+                      <IconButton
+                        onClick={(e) =>
+                          handleCommentDelete(
+                            e,
+                            comment.avatarURL,
+                            comment.username,
+                            comment.comment
+                          )
+                        }
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </div>
+                  ) : null}
                 </div>
               </>
             ))}

@@ -26,6 +26,7 @@
   border-radius: 8px;
   width: 100%;
   order: -1;
+  flex-wrap: wrap;
 }
 
 .app__bodyBottom input {

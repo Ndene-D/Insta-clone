@@ -3,6 +3,7 @@ import "../css/post.css";
 import { Avatar } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import Comment from "./Comment";
 import db from "../firebase";
@@ -16,6 +17,7 @@ import {
   Timestamp,
   getDoc,
   arrayRemove,
+  deleteDoc,
 } from "firebase/firestore";
 
 import { useStateValue } from "../stateProvider";
@@ -36,10 +38,11 @@ function Posts(props) {
     e.preventDefault();
     const docRef = doc(db, "post", post_id);
 
-    const docSnap = await getDoc(docRef).data();
+    const docSnap = await getDoc(docRef);
 
-    if (docSnap.likes) {
-      if (docSnap.likes.includes(user.uid)) {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      if (data.likes.includes(user.uid)) {
         await updateDoc(docRef, {
           likes: arrayRemove(user.uid),
         });
@@ -54,6 +57,13 @@ function Posts(props) {
       });
     }
   };
+
+  const handlePostDelete = async (e) => {
+    e.preventDefault();
+    const docRef = doc(db, "post", post_id);
+
+    await deleteDoc(docRef);
+  };
   return (
     <div className="post">
       {/* <img className="post__avatar" src="" alt="" /> */}
@@ -67,9 +77,11 @@ function Posts(props) {
           </div>
         </div>
         <div className="post__header--right">
-          <IconButton>
-            <MoreHorizIcon />
-          </IconButton>
+          {user && user.displayName === username ? (
+            <IconButton onClick={handlePostDelete}>
+              <DeleteIcon />
+            </IconButton>
+          ) : null}
         </div>
       </div>
 
@@ -81,15 +93,21 @@ function Posts(props) {
       <div className="post__footer">
         <div className="post__options">
           <div className="post__option">
-            <IconButton onClick={handleLikeClick}>
-              <FavoriteBorderIcon
-                style={{
-                  color:
-                    user && likes && likes.includes(user.uid) ? "red" : null,
-                }}
-              />
-            </IconButton>
-            <h5>{likes ? likes.length : null}</h5>
+            {user ? (
+              <>
+                <IconButton onClick={handleLikeClick}>
+                  <FavoriteBorderIcon
+                    style={{
+                      color:
+                        user && likes && likes.includes(user.uid)
+                          ? "red"
+                          : null,
+                    }}
+                  />
+                </IconButton>
+                <h5>{likes ? likes.length : null}</h5>
+              </>
+            ) : null}
           </div>
         </div>
         <h4 className="post__caption">
