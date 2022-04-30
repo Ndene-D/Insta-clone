@@ -18,6 +18,7 @@ import {
   getDoc,
   arrayRemove,
   deleteDoc,
+  arrayUnion,
 } from "firebase/firestore";
 
 import { useStateValue } from "../stateProvider";
@@ -48,13 +49,9 @@ function Posts(props) {
         });
       } else {
         await updateDoc(docRef, {
-          likes: [user.uid],
+          likes: arrayUnion(user.uid),
         });
       }
-    } else {
-      await updateDoc(docRef, {
-        likes: [user.uid],
-      });
     }
   };
 

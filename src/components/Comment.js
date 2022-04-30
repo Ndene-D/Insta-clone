@@ -12,6 +12,7 @@ import {
   updateDoc,
   Timestamp,
   arrayRemove,
+  arrayUnion,
   doc,
 } from "firebase/firestore";
 
@@ -27,13 +28,11 @@ function Comment(props) {
     e.preventDefault();
     const docRef = doc(db, "post", post_id);
     await updateDoc(docRef, {
-      comments: [
-        {
-          avatarURL: user.photoURL,
-          username: user.displayName,
-          comment: input,
-        },
-      ],
+      comments: arrayUnion({
+        avatarURL: user.photoURL,
+        username: user.displayName,
+        comment: input,
+      }),
     });
 
     setInput("");
